@@ -2,6 +2,7 @@
 import MainLayout from "@layouts/MainLayout.astro";
 import { getCollection, render } from "astro:content";
 import { CONFIG } from "../../config";
+import { url } from "@lib/url";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -16,7 +17,7 @@ const { title, description, tech, live, github, thumbnail, highlights, problem, 
 <MainLayout title={`${title} — ${CONFIG.name}`} description={description}>
   <main class="max-w-4xl mx-auto px-6 py-12">
     <!-- Back -->
-    <a href="/projects" class="font-mono text-[0.72rem] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors mb-10 flex items-center gap-2">
+    <a href={url("/projects")} class="font-mono text-[0.72rem] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors mb-10 flex items-center gap-2">
       ← All Projects
     </a>
 

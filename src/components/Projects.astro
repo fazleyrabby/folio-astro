@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import ProjectCard from "./ProjectCard.astro";
+import { url } from "@lib/url";
 
 const { type = "home" } = Astro.props;
 const allProjects = await getCollection('projects');
@@ -26,7 +27,7 @@ const projects = type === "home" ? allProjects.slice(0, 4) : allProjects;
 
     {type === "home" && allProjects.length > 4 && (
       <div class="mt-8 text-center">
-        <a href="/projects" class="btn-ghost group">
+        <a href={url("/projects")} class="btn-ghost group">
           View All Projects
           <span class="inline-block transition-transform group-hover:translate-x-1 ml-1">→</span>
         </a>

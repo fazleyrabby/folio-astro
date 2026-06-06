@@ -1,5 +1,6 @@
 ---
 import { CONFIG } from "../config";
+import { url } from "@lib/url";
 ---
 
 <section id="contact-cta" class="py-24 relative overflow-hidden">
@@ -26,7 +27,7 @@ import { CONFIG } from "../config";
         Say Hello
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
       </a>
-      <a href="/resume" class="btn-ghost px-8 py-4 text-lg">View Resume</a>
+      <a href={url("/resume")} class="btn-ghost px-8 py-4 text-lg">View Resume</a>
     </div>
 
     <div class="mt-20 pt-10 border-t border-border flex flex-wrap justify-center gap-x-12 gap-y-6">

@@ -1,9 +1,10 @@
 ---
+import { url } from "@lib/url";
 const { project, index = 0, isHome = false } = Astro.props;
 const { title, tech, live, github, thumbnail, description, type, status, highlights, problem } = project.data;
 const isCritical = isHome && index < 2;
 const hasCaseStudy = !!(problem || (highlights && highlights.length));
-const caseUrl = hasCaseStudy ? `/projects/${project.id}` : null;
+const caseUrl = hasCaseStudy ? url(`/projects/${project.id}`) : null;
 ---
 
 <article class="project-card group flex flex-col bg-[var(--bg-card,transparent)] border border-[var(--border)] overflow-hidden h-full">

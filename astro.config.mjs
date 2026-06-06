@@ -4,8 +4,10 @@ import rehypeSlug from "rehype-slug";
 import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
-  site: "https://your-site.com", // ← change to your domain
+  site: "https://fazleyrabby.github.io",
+  base: "/folio-astro",
   output: "static",
+  trailingSlash: "ignore",
   integrations: [tailwind(), sitemap()],
   image: {
     service: passthroughImageService(),

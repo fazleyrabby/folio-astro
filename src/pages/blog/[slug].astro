@@ -2,6 +2,7 @@
 import MainLayout from "@layouts/MainLayout.astro";
 import { getCollection, render } from "astro:content";
 import { CONFIG } from "../../config";
+import { url } from "@lib/url";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -44,7 +45,7 @@ const readingTime = Math.max(1, Math.ceil(post.body.split(/\s+/).length / 200));
     </article>
 
     <div class="mt-12 pt-8 border-t border-[var(--border)]">
-      <a href="/blog" class="font-mono text-[0.75rem] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">← Back to Blog</a>
+      <a href={url("/blog")} class="font-mono text-[0.75rem] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">← Back to Blog</a>
     </div>
   </main>
 </MainLayout>

@@ -1,6 +1,7 @@
 ---
 import { CONFIG } from "../config";
 import ThemeIcon from "@components/ThemeIcon.astro";
+import { url } from "@lib/url";
 ---
 
 <header class="sticky top-0 z-50 w-full backdrop-blur-xl border-b border-[var(--border)]"
@@ -8,7 +9,7 @@ import ThemeIcon from "@components/ThemeIcon.astro";
   <nav class="max-w-6xl mx-auto px-6 py-3">
     <div class="flex items-center justify-between">
       <!-- Logo -->
-      <a href="/" class="flex items-center gap-2 group">
+      <a href={url("/")} class="flex items-center gap-2 group">
         <span class="text-xl text-[var(--text-primary)] font-display font-bold tracking-tight">
           {CONFIG.name.split(" ")[0]}<span class="text-[var(--accent)]">.</span>
         </span>
@@ -17,7 +18,7 @@ import ThemeIcon from "@components/ThemeIcon.astro";
       <!-- Desktop nav -->
       <div class="hidden md:flex items-center gap-8">
         {CONFIG.nav.map(item => (
-          <a href={item.href}
+          <a href={url(item.href)}
             class="text-[0.75rem] font-mono uppercase tracking-[0.08em] text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors relative py-1">
             {item.label}
           </a>
@@ -43,7 +44,7 @@ import ThemeIcon from "@components/ThemeIcon.astro";
     <div id="mobile-menu" class="hidden md:hidden py-4 border-t border-[var(--border)] mt-3">
       <div class="flex flex-col gap-4">
         {CONFIG.nav.map(item => (
-          <a href={item.href}
+          <a href={url(item.href)}
             class="text-[0.75rem] font-mono uppercase tracking-[0.08em] text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors">
             {item.label}
           </a>

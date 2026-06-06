@@ -1,5 +1,6 @@
 ---
 import { CONFIG } from "../config";
+import { url } from "@lib/url";
 ---
 
 <section
@@ -52,7 +53,7 @@ import { CONFIG } from "../config";
         </p>
 
         <div class="flex gap-3 flex-wrap mt-6">
-          <a href="/resume" class="btn-primary btn-magnetic">{CONFIG.hero.resumeLabel}</a>
+          <a href={url("/resume")} class="btn-primary btn-magnetic">{CONFIG.hero.resumeLabel}</a>
           <a href="#projects" class="btn-ghost">{CONFIG.hero.viewProjectsLabel}</a>
         </div>
 
@@ -78,7 +79,7 @@ import { CONFIG } from "../config";
           <div class="relative group mt-8">
             <div class="absolute inset-0 bg-[var(--accent)] rounded-2xl opacity-10 blur-3xl group-hover:opacity-30 transition-opacity duration-700"></div>
             <img 
-              src={CONFIG.hero.avatar} 
+              src={url(CONFIG.hero.avatar)}
               alt={CONFIG.name} 
               class="relative w-64 h-64 md:w-80 md:h-80 object-cover rounded-2xl border border-[var(--border)] shadow-xl transition-all duration-700 ease-out group-hover:-translate-y-3 group-hover:scale-[1.02] group-hover:border-[var(--accent)] group-hover:shadow-[0_0_40px_rgba(232,130,58,0.2)] grayscale-[30%] group-hover:grayscale-0 rotate-1 group-hover:rotate-0"
               loading="eager"
