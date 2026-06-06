@@ -2,6 +2,19 @@
 import MainLayout from "@layouts/MainLayout.astro";
 import { CONFIG } from "../config";
 import { url } from "@lib/url";
+import { getCollection, render } from "astro:content";
+
+const experiences = await getCollection("experiences");
+experiences.sort((a, b) => {
+  const da = a.data.timeline ? new Date(a.data.timeline) : new Date(0);
+  const db = b.data.timeline ? new Date(b.data.timeline) : new Date(0);
+  return db.getTime() - da.getTime();
+});
+const renderedExp = await Promise.all(
+  experiences.map(async (exp) => ({ ...exp, Content: (await render(exp)).Content }))
+);
+
+const { resume } = CONFIG;
 ---
 
 <MainLayout title={`Resume — ${CONFIG.name}`} description={`Resume of ${CONFIG.name}, ${CONFIG.title}.`}>
@@ -11,12 +24,12 @@ import { url } from "@lib/url";
         <span class="section-label">Resume</span>
         <h1 class="font-display font-bold text-[clamp(1.85rem,4.5vw,2.75rem)] text-[var(--text-primary)] leading-tight">My CV</h1>
       </div>
-      <a href={url("/resume.pdf")} download class="btn-ghost text-sm gap-2 w-fit">
+      <button id="print-resume" type="button" class="btn-ghost text-sm gap-2 w-fit print:hidden">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
         Download PDF
-      </a>
+      </button>
     </div>
 
     <div class="border border-[var(--border)] rounded-[var(--radius)] overflow-hidden">
@@ -24,35 +37,256 @@ import { url } from "@lib/url";
       <div class="p-8 border-b border-[var(--border)]">
         <h2 class="font-display font-bold text-2xl text-[var(--text-primary)] mb-1">{CONFIG.name}</h2>
         <p class="text-[var(--accent)] font-mono text-sm uppercase tracking-widest mb-3">{CONFIG.title}</p>
+        {resume?.location && (
+          <p class="text-[0.8rem] font-mono text-[var(--text-muted)] mb-3">{resume.location}</p>
+        )}
         <div class="flex flex-wrap gap-4 text-[0.8rem] font-mono text-[var(--text-muted)]">
           <a href={`mailto:${CONFIG.email}`} class="hover:text-[var(--accent)] transition-colors">{CONFIG.email}</a>
-          {CONFIG.social.github && <a href={CONFIG.social.github} target="_blank" class="hover:text-[var(--accent)] transition-colors">GitHub</a>}
-          {CONFIG.social.linkedin && <a href={CONFIG.social.linkedin} target="_blank" class="hover:text-[var(--accent)] transition-colors">LinkedIn</a>}
+          {CONFIG.social.github && <a href={CONFIG.social.github} target="_blank" rel="noreferrer" class="hover:text-[var(--accent)] transition-colors">GitHub</a>}
+          {CONFIG.social.linkedin && <a href={CONFIG.social.linkedin} target="_blank" rel="noreferrer" class="hover:text-[var(--accent)] transition-colors">LinkedIn</a>}
+          {CONFIG.social.twitter && <a href={CONFIG.social.twitter} target="_blank" rel="noreferrer" class="hover:text-[var(--accent)] transition-colors">Twitter</a>}
         </div>
       </div>
 
       <!-- Summary -->
-      <div class="p-8 border-b border-[var(--border)]">
+      <section class="p-8 border-b border-[var(--border)]">
         <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-4">Summary</h3>
         <p class="text-[var(--text-secondary)] leading-relaxed">{CONFIG.bio}</p>
-      </div>
+      </section>
+
+      <!-- Experience -->
+      {renderedExp.length > 0 && (
+        <section class="p-8 border-b border-[var(--border)]">
+          <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-6">Experience</h3>
+          <div class="space-y-7">
+            {renderedExp.map((exp) => (
+              <div>
+                <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-1">
+                  <div>
+                    <span class="font-display font-semibold text-[var(--text-primary)]">{exp.data.title}</span>
+                    <span class="text-[var(--text-muted)] mx-2">·</span>
+                    <span class="italic text-[var(--text-secondary)] text-[0.95rem]">{exp.data.role}</span>
+                  </div>
+                  <span class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-muted)] shrink-0">
+                    {exp.data.from} — {exp.data.to}
+                  </span>
+                </div>
+                <div class="text-[0.92rem] text-[var(--text-secondary)] leading-relaxed prose-resume">
+                  <exp.Content />
+                </div>
+                {exp.data.skills && (
+                  <p class="font-mono text-[0.7rem] text-[var(--text-muted)] mt-2 tracking-wide">{exp.data.skills}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <!-- Skills -->
-      <div class="p-8 border-b border-[var(--border)]">
-        <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-4">Skills</h3>
-        <div class="flex flex-wrap gap-2">
-          {[...CONFIG.skills.primary, ...CONFIG.skills.secondary].map(s => (
-            <span class="tag">{s}</span>
-          ))}
+      <section class="p-8 border-b border-[var(--border)]">
+        <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-6">Skills</h3>
+        <div class="space-y-4">
+          {CONFIG.skills.primary?.length > 0 && (
+            <div>
+              <p class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-secondary)] mb-2">Core</p>
+              <div class="flex flex-wrap gap-2">
+                {CONFIG.skills.primary.map(s => <span class="tag">{s}</span>)}
+              </div>
+            </div>
+          )}
+          {CONFIG.skills.secondary?.length > 0 && (
+            <div>
+              <p class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-secondary)] mb-2">Also</p>
+              <div class="flex flex-wrap gap-2">
+                {CONFIG.skills.secondary.map(s => <span class="tag">{s}</span>)}
+              </div>
+            </div>
+          )}
+          {CONFIG.skills.tools?.length > 0 && (
+            <div>
+              <p class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-secondary)] mb-2">Tools</p>
+              <div class="flex flex-wrap gap-2">
+                {CONFIG.skills.tools.map(s => <span class="tag">{s}</span>)}
+              </div>
+            </div>
+          )}
         </div>
-      </div>
+      </section>
 
-      <!-- Note -->
-      <div class="p-8 text-center">
-        <p class="font-mono text-xs text-[var(--text-muted)]">
-          Replace this page with your actual CV content, or add a <code class="text-[var(--accent)]">resume.pdf</code> to the <code class="text-[var(--accent)]">public/</code> folder.
-        </p>
-      </div>
+      <!-- Education -->
+      {resume?.education?.length > 0 && (
+        <section class="p-8 border-b border-[var(--border)]">
+          <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-6">Education</h3>
+          <div class="space-y-5">
+            {resume.education.map((e) => (
+              <div>
+                <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-1">
+                  <div>
+                    <span class="font-display font-semibold text-[var(--text-primary)]">{e.school}</span>
+                    <span class="text-[var(--text-muted)] mx-2">·</span>
+                    <span class="italic text-[var(--text-secondary)] text-[0.95rem]">{e.degree}</span>
+                  </div>
+                  <span class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-muted)] shrink-0">
+                    {e.from} — {e.to}
+                  </span>
+                </div>
+                {e.notes && <p class="text-[0.9rem] text-[var(--text-secondary)] leading-relaxed">{e.notes}</p>}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Certifications -->
+      {resume?.certifications?.length > 0 && (
+        <section class="p-8 border-b border-[var(--border)]">
+          <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-6">Certifications</h3>
+          <ul class="space-y-3">
+            {resume.certifications.map((c) => (
+              <li class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                <div>
+                  {c.link ? (
+                    <a href={c.link} target="_blank" rel="noreferrer" class="font-display font-semibold text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors">{c.name}</a>
+                  ) : (
+                    <span class="font-display font-semibold text-[var(--text-primary)]">{c.name}</span>
+                  )}
+                  <span class="text-[var(--text-muted)] mx-2">·</span>
+                  <span class="italic text-[var(--text-secondary)] text-[0.9rem]">{c.issuer}</span>
+                </div>
+                <span class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-muted)] shrink-0">{c.year}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <!-- Awards -->
+      {resume?.awards?.length > 0 && (
+        <section class="p-8 border-b border-[var(--border)]">
+          <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-6">Awards & Recognition</h3>
+          <ul class="space-y-2">
+            {resume.awards.map((a) => (
+              <li class="text-[0.92rem] text-[var(--text-secondary)]">
+                <span class="font-display font-semibold text-[var(--text-primary)]">{a.title}</span>
+                <span class="text-[var(--text-muted)] mx-2">·</span>
+                <span class="italic">{a.org}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <!-- Languages & Interests -->
+      {(resume?.languages?.length > 0 || resume?.interests?.length > 0) && (
+        <section class="p-8 grid sm:grid-cols-2 gap-8">
+          {resume.languages?.length > 0 && (
+            <div>
+              <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-4">Languages</h3>
+              <ul class="space-y-1.5 text-[0.92rem]">
+                {resume.languages.map((l) => (
+                  <li class="flex justify-between gap-4">
+                    <span class="text-[var(--text-primary)]">{l.name}</span>
+                    <span class="font-mono text-[0.75rem] text-[var(--text-muted)] uppercase tracking-wider">{l.level}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {resume.interests?.length > 0 && (
+            <div>
+              <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-4">Interests</h3>
+              <div class="flex flex-wrap gap-2">
+                {resume.interests.map(i => <span class="tag">{i}</span>)}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
     </div>
+
+    <p class="font-mono text-[0.7rem] text-center text-[var(--text-muted)] mt-8 print:hidden">
+      Edit <code class="text-[var(--accent)]">src/config.ts → CONFIG.resume</code> to update this page · the <strong>Download PDF</strong> button prints the CV section through your browser.
+    </p>
   </main>
 </MainLayout>
+
+<script>
+  document.getElementById("print-resume")?.addEventListener("click", () => window.print());
+</script>
+
+<style>
+  .prose-resume :global(ul) {
+    list-style: disc;
+    padding-left: 1.1rem;
+    margin: 0.25rem 0;
+  }
+  .prose-resume :global(li) {
+    margin-bottom: 0.25rem;
+  }
+  .prose-resume :global(li::marker) {
+    color: var(--accent);
+  }
+
+  @media print {
+    @page {
+      size: A4;
+      margin: 14mm;
+    }
+
+    :global(html),
+    :global(body) {
+      background: #ffffff !important;
+      color: #111 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    :global(header),
+    :global(footer),
+    :global(nav),
+    :global(#scroll-to-top),
+    :global(.hero-cursor-light),
+    :global(.editorial-break) {
+      display: none !important;
+    }
+
+    main {
+      max-width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    main > div:first-child {
+      display: none !important; /* hide page heading + print button on print */
+    }
+
+    main > div:nth-child(2) {
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+
+    main section,
+    main > div:nth-child(2) > div {
+      padding: 12px 0 !important;
+      border-color: #ddd !important;
+      page-break-inside: avoid;
+    }
+
+    h2, h3, .font-display {
+      color: #111 !important;
+    }
+
+    a {
+      color: inherit !important;
+      text-decoration: none !important;
+    }
+
+    .tag {
+      background: transparent !important;
+      border: 1px solid #999 !important;
+      color: #222 !important;
+    }
+  }
+</style>

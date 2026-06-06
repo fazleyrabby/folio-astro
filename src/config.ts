@@ -54,6 +54,43 @@ export const CONFIG = {
     tools: ["VS Code", "Figma", "Postman", "GitHub Actions", "Vercel", "Supabase"],
   },
 
+  // ── Resume page ──────────────────────────────────────────
+  resume: {
+    location: "Remote · Available worldwide",
+    languages: [
+      { name: "English", level: "Native" },
+      { name: "Bengali", level: "Native" },
+    ],
+    education: [
+      {
+        school: "University of Example",
+        degree: "B.Sc. in Computer Science",
+        from: "2015",
+        to: "2019",
+        notes: "Focus on systems programming and distributed databases. Graduated with honors.",
+      },
+    ],
+    certifications: [
+      {
+        name: "AWS Certified Solutions Architect — Associate",
+        issuer: "Amazon Web Services",
+        year: "2023",
+        link: null,
+      },
+      {
+        name: "Professional Scrum Master I",
+        issuer: "Scrum.org",
+        year: "2021",
+        link: null,
+      },
+    ],
+    awards: [
+      { title: "Hackathon Winner — Best Use of AI", org: "DevFest 2024" },
+      { title: "Open Source Contributor of the Month", org: "Astro Community, 2025" },
+    ],
+    interests: ["Type systems", "Static site performance", "Developer ergonomics", "Coffee"],
+  },
+
   // ── Editorial phrases (homepage dividers) ────────────────
   editorial: [
     "Building products people actually want to use.",
