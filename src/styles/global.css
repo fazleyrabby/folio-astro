@@ -473,18 +473,14 @@ html[data-theme="brutal"] #article-content li>code {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    backdrop-filter: blur(8px);
     border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    background: color-mix(in srgb, var(--accent) 8%, transparent);
-    padding: 0.4rem 0.8rem;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-primary);
+    background: transparent;
+    padding: 0.4rem 0.9rem;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
     margin-bottom: 2rem;
-    border-radius: var(--radius);
+    border-radius: 999px;
   }
 
   .btn-primary {

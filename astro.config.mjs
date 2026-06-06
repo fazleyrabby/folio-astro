@@ -4,8 +4,7 @@ import rehypeSlug from "rehype-slug";
 import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
-  site: "https://fazleyrabby.github.io",
-  base: "/folio-astro",
+  site: "https://folio.fazleyrabbi.xyz",
   output: "static",
   trailingSlash: "ignore",
   integrations: [tailwind(), sitemap()],
