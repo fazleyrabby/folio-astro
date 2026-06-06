@@ -238,18 +238,21 @@ const skillLine = [
       margin: 12mm;
     }
 
-    :global(*) {
-      background: transparent !important;
+    :global(*),
+    :global(*::before),
+    :global(*::after) {
+      background: none !important;
+      background-color: transparent !important;
+      background-image: none !important;
       box-shadow: none !important;
       text-shadow: none !important;
       color-scheme: light !important;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+      -webkit-print-color-adjust: economy !important;
+      print-color-adjust: economy !important;
     }
 
     :global(html),
     :global(body) {
-      background: #ffffff !important;
       color: #111 !important;
       font-size: 10.5pt !important;
     }
@@ -268,15 +271,12 @@ const skillLine = [
       max-width: 100% !important;
       padding: 0 !important;
       margin: 0 !important;
-      background: #ffffff !important;
     }
 
     .cv {
       border: none !important;
       padding: 0 !important;
       border-radius: 0 !important;
-      box-shadow: none !important;
-      background: #ffffff !important;
       color: #111 !important;
     }
 
