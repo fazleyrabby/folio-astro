@@ -1,7 +1,6 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
 import { CONFIG } from "../config";
-import { url } from "@lib/url";
 import { getCollection, render } from "astro:content";
 
 const experiences = await getCollection("experiences");
@@ -15,16 +14,23 @@ const renderedExp = await Promise.all(
 );
 
 const { resume } = CONFIG;
+
+const skillLine = [
+  CONFIG.skills.primary?.length && { label: "Core", items: CONFIG.skills.primary },
+  CONFIG.skills.secondary?.length && { label: "Also", items: CONFIG.skills.secondary },
+  CONFIG.skills.tools?.length && { label: "Tools", items: CONFIG.skills.tools },
+].filter(Boolean) as { label: string; items: string[] }[];
 ---
 
 <MainLayout title={`Resume — ${CONFIG.name}`} description={`Resume of ${CONFIG.name}, ${CONFIG.title}.`}>
-  <main class="max-w-4xl mx-auto px-6 py-12">
-    <div class="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+  <main class="max-w-3xl mx-auto px-6 py-10">
+    <!-- Page heading + print button (screen only) -->
+    <div class="mb-6 flex items-end justify-between gap-4 print:hidden">
       <div>
         <span class="section-label">Resume</span>
-        <h1 class="font-display font-bold text-[clamp(1.85rem,4.5vw,2.75rem)] text-[var(--text-primary)] leading-tight">My CV</h1>
+        <h1 class="font-display font-bold text-[clamp(1.5rem,3.5vw,2rem)] text-[var(--text-primary)] leading-tight">My CV</h1>
       </div>
-      <button id="print-resume" type="button" class="btn-ghost text-sm gap-2 w-fit print:hidden">
+      <button id="print-resume" type="button" class="btn-ghost text-xs gap-2 w-fit">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
@@ -32,50 +38,48 @@ const { resume } = CONFIG;
       </button>
     </div>
 
-    <div class="border border-[var(--border)] rounded-[var(--radius)] overflow-hidden">
+    <article class="cv border border-[var(--border)] rounded-[var(--radius)] p-6 sm:p-8 text-[var(--text-primary)]">
       <!-- Header -->
-      <div class="p-8 border-b border-[var(--border)]">
-        <h2 class="font-display font-bold text-2xl text-[var(--text-primary)] mb-1">{CONFIG.name}</h2>
-        <p class="text-[var(--accent)] font-mono text-sm uppercase tracking-widest mb-3">{CONFIG.title}</p>
-        {resume?.location && (
-          <p class="text-[0.8rem] font-mono text-[var(--text-muted)] mb-3">{resume.location}</p>
-        )}
-        <div class="flex flex-wrap gap-4 text-[0.8rem] font-mono text-[var(--text-muted)]">
+      <header class="cv-head pb-4 mb-5 border-b border-[var(--border)]">
+        <h2 class="font-display font-bold text-xl sm:text-2xl leading-tight">{CONFIG.name}</h2>
+        <p class="text-[var(--accent)] font-mono text-[0.7rem] uppercase tracking-widest mt-0.5">{CONFIG.title}</p>
+        <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[0.75rem] font-mono text-[var(--text-muted)]">
+          {resume?.location && <span>{resume.location}</span>}
           <a href={`mailto:${CONFIG.email}`} class="hover:text-[var(--accent)] transition-colors">{CONFIG.email}</a>
           {CONFIG.social.github && <a href={CONFIG.social.github} target="_blank" rel="noreferrer" class="hover:text-[var(--accent)] transition-colors">GitHub</a>}
           {CONFIG.social.linkedin && <a href={CONFIG.social.linkedin} target="_blank" rel="noreferrer" class="hover:text-[var(--accent)] transition-colors">LinkedIn</a>}
           {CONFIG.social.twitter && <a href={CONFIG.social.twitter} target="_blank" rel="noreferrer" class="hover:text-[var(--accent)] transition-colors">Twitter</a>}
         </div>
-      </div>
+      </header>
 
       <!-- Summary -->
-      <section class="p-8 border-b border-[var(--border)]">
-        <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-4">Summary</h3>
-        <p class="text-[var(--text-secondary)] leading-relaxed">{CONFIG.bio}</p>
+      <section class="cv-section">
+        <h3 class="cv-h">Summary</h3>
+        <p class="text-[0.85rem] text-[var(--text-secondary)] leading-snug">{CONFIG.bio}</p>
       </section>
 
       <!-- Experience -->
       {renderedExp.length > 0 && (
-        <section class="p-8 border-b border-[var(--border)]">
-          <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-6">Experience</h3>
-          <div class="space-y-7">
+        <section class="cv-section">
+          <h3 class="cv-h">Experience</h3>
+          <div class="space-y-3.5">
             {renderedExp.map((exp) => (
               <div>
-                <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-1">
-                  <div>
-                    <span class="font-display font-semibold text-[var(--text-primary)]">{exp.data.title}</span>
-                    <span class="text-[var(--text-muted)] mx-2">·</span>
-                    <span class="italic text-[var(--text-secondary)] text-[0.95rem]">{exp.data.role}</span>
-                  </div>
-                  <span class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-muted)] shrink-0">
+                <div class="flex flex-wrap items-baseline justify-between gap-x-3 leading-tight">
+                  <p class="text-[0.9rem]">
+                    <span class="font-display font-semibold">{exp.data.title}</span>
+                    <span class="text-[var(--text-muted)] mx-1.5">·</span>
+                    <span class="italic text-[var(--text-secondary)]">{exp.data.role}</span>
+                  </p>
+                  <span class="font-mono text-[0.65rem] uppercase tracking-wider text-[var(--text-muted)] shrink-0">
                     {exp.data.from} — {exp.data.to}
                   </span>
                 </div>
-                <div class="text-[0.92rem] text-[var(--text-secondary)] leading-relaxed prose-resume">
+                <div class="cv-prose text-[0.82rem] text-[var(--text-secondary)] mt-1">
                   <exp.Content />
                 </div>
                 {exp.data.skills && (
-                  <p class="font-mono text-[0.7rem] text-[var(--text-muted)] mt-2 tracking-wide">{exp.data.skills}</p>
+                  <p class="font-mono text-[0.65rem] text-[var(--text-muted)] mt-1">{exp.data.skills}</p>
                 )}
               </div>
             ))}
@@ -83,55 +87,39 @@ const { resume } = CONFIG;
         </section>
       )}
 
-      <!-- Skills -->
-      <section class="p-8 border-b border-[var(--border)]">
-        <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-6">Skills</h3>
-        <div class="space-y-4">
-          {CONFIG.skills.primary?.length > 0 && (
-            <div>
-              <p class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-secondary)] mb-2">Core</p>
-              <div class="flex flex-wrap gap-2">
-                {CONFIG.skills.primary.map(s => <span class="tag">{s}</span>)}
+      <!-- Skills (single compact block) -->
+      {skillLine.length > 0 && (
+        <section class="cv-section">
+          <h3 class="cv-h">Skills</h3>
+          <dl class="text-[0.82rem] leading-snug space-y-1">
+            {skillLine.map((row) => (
+              <div class="flex gap-3">
+                <dt class="font-mono text-[0.65rem] uppercase tracking-wider text-[var(--text-muted)] w-12 shrink-0 pt-0.5">{row.label}</dt>
+                <dd class="text-[var(--text-secondary)]">{row.items.join(" · ")}</dd>
               </div>
-            </div>
-          )}
-          {CONFIG.skills.secondary?.length > 0 && (
-            <div>
-              <p class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-secondary)] mb-2">Also</p>
-              <div class="flex flex-wrap gap-2">
-                {CONFIG.skills.secondary.map(s => <span class="tag">{s}</span>)}
-              </div>
-            </div>
-          )}
-          {CONFIG.skills.tools?.length > 0 && (
-            <div>
-              <p class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-secondary)] mb-2">Tools</p>
-              <div class="flex flex-wrap gap-2">
-                {CONFIG.skills.tools.map(s => <span class="tag">{s}</span>)}
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
+            ))}
+          </dl>
+        </section>
+      )}
 
       <!-- Education -->
       {resume?.education?.length > 0 && (
-        <section class="p-8 border-b border-[var(--border)]">
-          <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-6">Education</h3>
-          <div class="space-y-5">
+        <section class="cv-section">
+          <h3 class="cv-h">Education</h3>
+          <div class="space-y-2">
             {resume.education.map((e) => (
               <div>
-                <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-1">
-                  <div>
-                    <span class="font-display font-semibold text-[var(--text-primary)]">{e.school}</span>
-                    <span class="text-[var(--text-muted)] mx-2">·</span>
-                    <span class="italic text-[var(--text-secondary)] text-[0.95rem]">{e.degree}</span>
-                  </div>
-                  <span class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-muted)] shrink-0">
+                <div class="flex flex-wrap items-baseline justify-between gap-x-3 leading-tight">
+                  <p class="text-[0.9rem]">
+                    <span class="font-display font-semibold">{e.school}</span>
+                    <span class="text-[var(--text-muted)] mx-1.5">·</span>
+                    <span class="italic text-[var(--text-secondary)]">{e.degree}</span>
+                  </p>
+                  <span class="font-mono text-[0.65rem] uppercase tracking-wider text-[var(--text-muted)] shrink-0">
                     {e.from} — {e.to}
                   </span>
                 </div>
-                {e.notes && <p class="text-[0.9rem] text-[var(--text-secondary)] leading-relaxed">{e.notes}</p>}
+                {e.notes && <p class="text-[0.8rem] text-[var(--text-secondary)] leading-snug mt-0.5">{e.notes}</p>}
               </div>
             ))}
           </div>
@@ -140,21 +128,21 @@ const { resume } = CONFIG;
 
       <!-- Certifications -->
       {resume?.certifications?.length > 0 && (
-        <section class="p-8 border-b border-[var(--border)]">
-          <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-6">Certifications</h3>
-          <ul class="space-y-3">
+        <section class="cv-section">
+          <h3 class="cv-h">Certifications</h3>
+          <ul class="space-y-1 text-[0.82rem]">
             {resume.certifications.map((c) => (
-              <li class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-                <div>
+              <li class="flex flex-wrap items-baseline justify-between gap-x-3 leading-tight">
+                <span>
                   {c.link ? (
-                    <a href={c.link} target="_blank" rel="noreferrer" class="font-display font-semibold text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors">{c.name}</a>
+                    <a href={c.link} target="_blank" rel="noreferrer" class="font-display font-semibold hover:text-[var(--accent)] transition-colors">{c.name}</a>
                   ) : (
-                    <span class="font-display font-semibold text-[var(--text-primary)]">{c.name}</span>
+                    <span class="font-display font-semibold">{c.name}</span>
                   )}
-                  <span class="text-[var(--text-muted)] mx-2">·</span>
-                  <span class="italic text-[var(--text-secondary)] text-[0.9rem]">{c.issuer}</span>
-                </div>
-                <span class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-muted)] shrink-0">{c.year}</span>
+                  <span class="text-[var(--text-muted)] mx-1.5">·</span>
+                  <span class="italic text-[var(--text-secondary)]">{c.issuer}</span>
+                </span>
+                <span class="font-mono text-[0.65rem] uppercase tracking-wider text-[var(--text-muted)] shrink-0">{c.year}</span>
               </li>
             ))}
           </ul>
@@ -163,13 +151,13 @@ const { resume } = CONFIG;
 
       <!-- Awards -->
       {resume?.awards?.length > 0 && (
-        <section class="p-8 border-b border-[var(--border)]">
-          <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-6">Awards & Recognition</h3>
-          <ul class="space-y-2">
+        <section class="cv-section">
+          <h3 class="cv-h">Awards</h3>
+          <ul class="space-y-1 text-[0.82rem] text-[var(--text-secondary)]">
             {resume.awards.map((a) => (
-              <li class="text-[0.92rem] text-[var(--text-secondary)]">
+              <li>
                 <span class="font-display font-semibold text-[var(--text-primary)]">{a.title}</span>
-                <span class="text-[var(--text-muted)] mx-2">·</span>
+                <span class="text-[var(--text-muted)] mx-1.5">·</span>
                 <span class="italic">{a.org}</span>
               </li>
             ))}
@@ -177,36 +165,29 @@ const { resume } = CONFIG;
         </section>
       )}
 
-      <!-- Languages & Interests -->
+      <!-- Languages + Interests inline -->
       {(resume?.languages?.length > 0 || resume?.interests?.length > 0) && (
-        <section class="p-8 grid sm:grid-cols-2 gap-8">
+        <section class="cv-section grid sm:grid-cols-2 gap-x-8 gap-y-3">
           {resume.languages?.length > 0 && (
             <div>
-              <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-4">Languages</h3>
-              <ul class="space-y-1.5 text-[0.92rem]">
-                {resume.languages.map((l) => (
-                  <li class="flex justify-between gap-4">
-                    <span class="text-[var(--text-primary)]">{l.name}</span>
-                    <span class="font-mono text-[0.75rem] text-[var(--text-muted)] uppercase tracking-wider">{l.level}</span>
-                  </li>
-                ))}
-              </ul>
+              <h3 class="cv-h">Languages</h3>
+              <p class="text-[0.82rem] text-[var(--text-secondary)] leading-snug">
+                {resume.languages.map(l => `${l.name} (${l.level})`).join(" · ")}
+              </p>
             </div>
           )}
           {resume.interests?.length > 0 && (
             <div>
-              <h3 class="font-mono text-[0.65rem] uppercase tracking-widest text-[var(--text-muted)] mb-4">Interests</h3>
-              <div class="flex flex-wrap gap-2">
-                {resume.interests.map(i => <span class="tag">{i}</span>)}
-              </div>
+              <h3 class="cv-h">Interests</h3>
+              <p class="text-[0.82rem] text-[var(--text-secondary)] leading-snug">{resume.interests.join(" · ")}</p>
             </div>
           )}
         </section>
       )}
-    </div>
+    </article>
 
-    <p class="font-mono text-[0.7rem] text-center text-[var(--text-muted)] mt-8 print:hidden">
-      Edit <code class="text-[var(--accent)]">src/config.ts → CONFIG.resume</code> to update this page · the <strong>Download PDF</strong> button prints the CV section through your browser.
+    <p class="font-mono text-[0.7rem] text-center text-[var(--text-muted)] mt-6 print:hidden">
+      Edit <code class="text-[var(--accent)]">src/config.ts → CONFIG.resume</code> · click <strong>Download PDF</strong> to print this CV through your browser.
     </p>
   </main>
 </MainLayout>
@@ -216,33 +197,57 @@ const { resume } = CONFIG;
 </script>
 
 <style>
-  .prose-resume :global(ul) {
+  .cv-h {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.55rem;
+  }
+
+  .cv-section {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+    border-top: 1px solid var(--border);
+  }
+  .cv-section:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .cv-prose :global(ul) {
     list-style: disc;
-    padding-left: 1.1rem;
-    margin: 0.25rem 0;
+    padding-left: 1rem;
+    margin: 0.2rem 0;
   }
-  .prose-resume :global(li) {
-    margin-bottom: 0.25rem;
+  .cv-prose :global(li) {
+    margin-bottom: 0.15rem;
+    line-height: 1.45;
   }
-  .prose-resume :global(li::marker) {
+  .cv-prose :global(li::marker) {
     color: var(--accent);
+  }
+  .cv-prose :global(p) {
+    margin: 0.2rem 0;
   }
 
   @media print {
     @page {
       size: A4;
-      margin: 14mm;
+      margin: 12mm;
     }
 
     :global(html),
     :global(body) {
       background: #ffffff !important;
       color: #111 !important;
+      font-size: 10.5pt !important;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
 
-    :global(header),
+    :global(header.sticky),
     :global(footer),
     :global(nav),
     :global(#scroll-to-top),
@@ -257,25 +262,30 @@ const { resume } = CONFIG;
       margin: 0 !important;
     }
 
-    main > div:first-child {
-      display: none !important; /* hide page heading + print button on print */
-    }
-
-    main > div:nth-child(2) {
+    .cv {
       border: none !important;
+      padding: 0 !important;
       border-radius: 0 !important;
       box-shadow: none !important;
-    }
-
-    main section,
-    main > div:nth-child(2) > div {
-      padding: 12px 0 !important;
-      border-color: #ddd !important;
-      page-break-inside: avoid;
-    }
-
-    h2, h3, .font-display {
       color: #111 !important;
+    }
+
+    .cv-head {
+      border-color: #222 !important;
+      padding-bottom: 8px !important;
+      margin-bottom: 10px !important;
+    }
+
+    .cv-section {
+      border-color: #ddd !important;
+      padding: 8px 0 !important;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .cv-h {
+      color: #555 !important;
+      margin-bottom: 4px !important;
     }
 
     a {
@@ -283,9 +293,13 @@ const { resume } = CONFIG;
       text-decoration: none !important;
     }
 
-    .tag {
-      background: transparent !important;
-      border: 1px solid #999 !important;
+    h2, h3, .font-display {
+      color: #111 !important;
+    }
+
+    .text-\[var\(--text-secondary\)\],
+    .text-\[var\(--text-muted\)\],
+    .text-\[var\(--text-primary\)\] {
       color: #222 !important;
     }
   }
