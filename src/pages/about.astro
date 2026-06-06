@@ -1,0 +1,31 @@
+---
+import MainLayout from "@layouts/MainLayout.astro";
+import { CONFIG } from "../config";
+import { Content as AboutContent } from "../content/about.md";
+---
+
+<MainLayout title={`About — ${CONFIG.name}`} description={`Learn more about ${CONFIG.name}`}>
+  <main class="py-12">
+    <div class="max-w-3xl mx-auto px-6">
+      <div class="mb-14">
+        <span class="section-label">About</span>
+        <h1 class="font-display font-bold text-[clamp(1.85rem,4.5vw,2.75rem)] text-[var(--text-primary)] leading-tight">{CONFIG.name}</h1>
+        <p class="font-serif italic text-[1.2rem] text-[var(--text-secondary)] mt-4">{CONFIG.tagline}</p>
+      </div>
+
+      <div class="prose prose-neutral dark:prose-invert max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)] prose-strong:text-[var(--text-primary)] mb-12">
+        <AboutContent />
+      </div>
+
+      <div class="flex flex-wrap gap-4 pt-8 border-t border-[var(--border)]">
+        {CONFIG.social.github && (
+          <a href={CONFIG.social.github} target="_blank" rel="noopener noreferrer" class="btn-ghost">GitHub</a>
+        )}
+        {CONFIG.social.linkedin && (
+          <a href={CONFIG.social.linkedin} target="_blank" rel="noopener noreferrer" class="btn-ghost">LinkedIn</a>
+        )}
+        <a href={`mailto:${CONFIG.email}`} class="btn-primary">Say Hello</a>
+      </div>
+    </div>
+  </main>
+</MainLayout>

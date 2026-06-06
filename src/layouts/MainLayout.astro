@@ -1,0 +1,81 @@
+---
+import Head from "./Head.astro";
+import Nav from "./Nav.astro";
+import Footer from "./Footer.astro";
+import "../styles/global.css";
+import ScrollToTop from "@components/ScrollToTop.astro";
+
+const {
+  title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType,
+  twitterCard, twitterImage, twitterTitle, twitterDescription,
+  articlePublishedTime, articleModifiedTime, articleTags,
+} = Astro.props;
+---
+
+<html lang="en">
+  <Head
+    {title} {description} {ogTitle} {ogDescription} {ogImage} {ogUrl} {ogType}
+    {twitterCard} {twitterImage} {twitterTitle} {twitterDescription}
+    {articlePublishedTime} {articleModifiedTime} {articleTags}
+  />
+  <body class="font-sans min-h-screen relative overflow-x-hidden">
+    <div class="page-gradient-layer" aria-hidden="true"></div>
+    <div class="cursor" aria-hidden="true"></div>
+    <Nav />
+    <div class="w-full relative z-10">
+      <slot />
+    </div>
+    <Footer />
+    <ScrollToTop />
+
+    <script>
+      const initAnimations = async () => {
+        const { default: Lenis } = await import('lenis');
+        const { gsap } = await import('gsap');
+        const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+        gsap.registerPlugin(ScrollTrigger);
+
+        const lenis = new Lenis({
+          duration: 1.2,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+        });
+
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+
+        // Hero cursor light effect
+        const cursorLight = document.querySelector('.hero-cursor-light') as HTMLElement;
+        if (cursorLight && window.matchMedia('(pointer: fine)').matches) {
+          document.addEventListener('mousemove', (e) => {
+            gsap.to(cursorLight, {
+              x: e.clientX, y: e.clientY,
+              xPercent: -50, yPercent: -50,
+              duration: 0.6, ease: 'power2.out'
+            });
+          }, { passive: true });
+        }
+
+        await import("../scripts/animations.js");
+      };
+
+      // Custom cursor (desktop only)
+      const cursor = document.querySelector('.cursor') as HTMLElement;
+      if (cursor && window.matchMedia('(pointer: fine)').matches) {
+        document.addEventListener('mousemove', (e) => {
+          cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+        }, { passive: true });
+        document.querySelectorAll('a, button, .btn-magnetic').forEach((el) => {
+          el.addEventListener('mouseenter', () => cursor.classList.add('cursor--hover'));
+          el.addEventListener('mouseleave', () => cursor.classList.remove('cursor--hover'));
+        });
+      }
+
+      if (window.requestIdleCallback) {
+        requestIdleCallback(() => { initAnimations(); });
+      } else {
+        setTimeout(initAnimations, 1000);
+      }
+    </script>
+  </body>
+</html>

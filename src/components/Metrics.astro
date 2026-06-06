@@ -1,0 +1,41 @@
+---
+import { CONFIG } from "../config";
+---
+
+<section class="metrics-strip">
+  <div class="max-w-6xl mx-auto px-6">
+    <ul class="metrics-grid">
+      {CONFIG.metrics.map(m => (
+        <li class="metric">
+          <div class="metric-value">{m.value}</div>
+          <div class="metric-label">{m.label}</div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .metrics-strip {
+    padding: 1.75rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .metrics-grid {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .metrics-grid { grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+  }
+  .metric { text-align: center; }
+  .metric-value {
+    font-family: var(--font-display, inherit); font-weight: 700;
+    font-size: clamp(1.4rem, 3vw, 2rem); line-height: 1;
+    color: var(--accent); margin-bottom: 0.5rem;
+  }
+  .metric-label {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted);
+  }
+</style>

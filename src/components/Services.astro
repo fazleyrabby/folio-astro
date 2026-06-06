@@ -1,0 +1,39 @@
+---
+const services = [
+  {
+    title: "Web Application Development",
+    desc: "End-to-end web apps built with modern frameworks. Clean architecture, fast performance, and scalable by design."
+  },
+  {
+    title: "API Design & Integration",
+    desc: "RESTful and GraphQL APIs that are easy to consume, well-documented, and built to handle real-world load."
+  },
+  {
+    title: "Performance Optimization",
+    desc: "Auditing and improving page load times, Core Web Vitals, and database query performance."
+  },
+  {
+    title: "Technical Consulting",
+    desc: "Architecture reviews, technology selection, and hands-on help getting your product from idea to production."
+  }
+];
+---
+
+<section id="services" class="py-16">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="mb-10">
+      <span class="section-label">Services</span>
+      <h2 class="text-3xl md:text-5xl font-bold font-display text-[var(--text-primary)] mb-2">What I Do</h2>
+      <p class="text-[var(--text-secondary)] max-w-xl">I help teams ship better products, faster.</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-4">
+      {services.map(s => (
+        <div class="border border-[var(--border)] rounded-[var(--radius)] p-5 hover:border-[var(--accent)] transition-colors">
+          <h3 class="font-medium mb-2 text-[var(--text-primary)]">{s.title}</h3>
+          <p class="text-sm text-[var(--text-secondary)] leading-relaxed">{s.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

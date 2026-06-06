@@ -1,0 +1,8 @@
+---
+import { CONFIG } from "../../config";
+---
+{CONFIG.social.github && (
+  <a href={CONFIG.social.github} target="_blank" rel="noopener noreferrer" title="GitHub" class="hover:text-[var(--accent)] transition-colors">
+    <slot />
+  </a>
+)}

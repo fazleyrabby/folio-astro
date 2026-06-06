@@ -1,0 +1,8 @@
+---
+import { CONFIG } from "../../config";
+---
+{CONFIG.social.codepen && (
+  <a href={CONFIG.social.codepen} target="_blank" rel="noopener noreferrer" title="CodePen" class="hover:text-[var(--accent)] transition-colors">
+    <slot />
+  </a>
+)}

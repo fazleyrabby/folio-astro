@@ -1,0 +1,79 @@
+---
+const { project, index = 0, isHome = false } = Astro.props;
+const { title, tech, live, github, thumbnail, description, type, status, highlights, problem } = project.data;
+const isCritical = isHome && index < 2;
+const hasCaseStudy = !!(problem || (highlights && highlights.length));
+const caseUrl = hasCaseStudy ? `/projects/${project.id}` : null;
+---
+
+<article class="project-card group flex flex-col bg-[var(--bg-card,transparent)] border border-[var(--border)] overflow-hidden h-full">
+  <!-- Thumbnail -->
+  <a href={caseUrl ?? live ?? github ?? "#"} target={caseUrl ? "_self" : "_blank"} rel="noreferrer" aria-label={title}
+     class="block relative overflow-hidden aspect-video flex-shrink-0 bg-[var(--border)]">
+    {thumbnail ? (
+      <>
+        <img
+          src={thumbnail}
+          class="object-cover w-full h-full transition-all duration-700 grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105"
+          alt={`${title} screenshot`}
+          width={600} height={338}
+          loading={isCritical ? "eager" : "lazy"}
+        />
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+      </>
+    ) : (
+      <div class="w-full h-full flex items-center justify-center text-[var(--text-muted)] font-mono text-xs uppercase tracking-widest">
+        No Preview
+      </div>
+    )}
+    {type && <span class="tag absolute top-3 right-3">{type}</span>}
+  </a>
+
+  <!-- Content -->
+  <div class="flex flex-col flex-grow p-4 sm:p-5 md:p-6">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-display font-bold text-xl text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
+        {caseUrl ? <a href={caseUrl} class="hover:text-[var(--accent)] transition-colors">{title}</a> : title}
+      </h3>
+      {status && (
+        <div class="flex items-center gap-2 px-2 py-0.5 rounded-full bg-[var(--accent-dim)] border border-[var(--border)]">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent)] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[var(--accent)]"></span>
+          </span>
+          <span class="font-mono text-[0.6rem] uppercase tracking-wider text-[var(--accent)] font-bold">{status}</span>
+        </div>
+      )}
+    </div>
+
+    <p class="text-[0.9rem] text-[var(--text-secondary)] mb-3 line-clamp-3 leading-relaxed">{description}</p>
+
+    <div class="flex gap-2 flex-wrap mb-4 mt-auto">
+      {tech?.map((t: string) => <span class="tag">{t}</span>)}
+    </div>
+
+    <div class="flex gap-3">
+      {caseUrl && (
+        <a class="flex-1 btn-primary btn-magnetic !py-2.5 text-xs tracking-wider" href={caseUrl}>Case Study</a>
+      )}
+      {!caseUrl && live && (
+        <a class="flex-1 btn-primary btn-magnetic !py-2.5 text-xs tracking-wider" href={live} target="_blank">Live Demo</a>
+      )}
+      {github && (
+        <a class="flex-1 btn-ghost btn-magnetic !py-2.5 text-xs tracking-wider" href={github} target="_blank">GitHub</a>
+      )}
+    </div>
+  </div>
+</article>
+
+<style>
+  .project-card {
+    border-radius: var(--radius);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.4s var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1));
+  }
+  .project-card:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--accent-glow);
+    transform: translateY(-4px);
+  }
+</style>

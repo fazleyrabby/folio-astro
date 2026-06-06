@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import ProjectCard from "./ProjectCard.astro";
+
+const { type = "home" } = Astro.props;
+const allProjects = await getCollection('projects');
+allProjects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
+const projects = type === "home" ? allProjects.slice(0, 4) : allProjects;
+---
+
+<section id="projects" class="py-10">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex items-center gap-6 mb-8">
+      <div>
+        <span class="section-label">Portfolio</span>
+        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.5rem,3.5vw,2.25rem)] leading-tight">Selected Work</h2>
+      </div>
+      <div class="flex-1 hidden md:block h-[1px] bg-accent opacity-20 dark:opacity-30"></div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {projects.map((project, index) => (
+        <ProjectCard project={project} index={index} isHome={type === "home"} />
+      ))}
+    </div>
+
+    {type === "home" && allProjects.length > 4 && (
+      <div class="mt-8 text-center">
+        <a href="/projects" class="btn-ghost group">
+          View All Projects
+          <span class="inline-block transition-transform group-hover:translate-x-1 ml-1">→</span>
+        </a>
+      </div>
+    )}
+  </div>
+</section>

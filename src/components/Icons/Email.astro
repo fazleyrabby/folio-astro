@@ -1,0 +1,8 @@
+---
+import { CONFIG } from "../../config";
+---
+{CONFIG.email && (
+  <a href={`mailto:${CONFIG.email}`} rel="noopener noreferrer" title={`Email: ${CONFIG.email}`} class="hover:text-[var(--accent)] transition-colors">
+    <slot />
+  </a>
+)}

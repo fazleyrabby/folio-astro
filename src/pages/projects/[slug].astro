@@ -1,0 +1,105 @@
+---
+import MainLayout from "@layouts/MainLayout.astro";
+import { getCollection, render } from "astro:content";
+import { CONFIG } from "../../config";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map(project => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { title, description, tech, live, github, thumbnail, highlights, problem, solution, scope, period, role } = project.data;
+---
+
+<MainLayout title={`${title} — ${CONFIG.name}`} description={description}>
+  <main class="max-w-4xl mx-auto px-6 py-12">
+    <!-- Back -->
+    <a href="/projects" class="font-mono text-[0.72rem] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors mb-10 flex items-center gap-2">
+      ← All Projects
+    </a>
+
+    {thumbnail && (
+      <div class="rounded-lg border border-[var(--border)] overflow-hidden mb-10">
+        <img src={thumbnail} alt={title} class="w-full object-cover max-h-[400px]" loading="eager" />
+      </div>
+    )}
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <!-- Main content -->
+      <div class="lg:col-span-2">
+        <h1 class="font-display font-bold text-[clamp(1.75rem,4vw,2.5rem)] text-[var(--text-primary)] leading-tight mb-4">{title}</h1>
+        <p class="text-[var(--text-secondary)] text-lg leading-relaxed mb-8">{description}</p>
+
+        {problem && (
+          <div class="mb-8">
+            <h2 class="font-display font-bold text-xl text-[var(--text-primary)] mb-3">The Problem</h2>
+            <p class="text-[var(--text-secondary)] leading-relaxed">{problem}</p>
+          </div>
+        )}
+
+        {solution && (
+          <div class="mb-8">
+            <h2 class="font-display font-bold text-xl text-[var(--text-primary)] mb-3">The Solution</h2>
+            <p class="text-[var(--text-secondary)] leading-relaxed">{solution}</p>
+          </div>
+        )}
+
+        {highlights && highlights.length > 0 && (
+          <div class="mb-8">
+            <h2 class="font-display font-bold text-xl text-[var(--text-primary)] mb-3">Highlights</h2>
+            <ul class="space-y-2">
+              {highlights.map(h => (
+                <li class="flex items-start gap-3 text-[var(--text-secondary)]">
+                  <span class="text-[var(--accent)] mt-1 shrink-0">▸</span>
+                  {h}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="space-y-6">
+        <div class="flex gap-3 flex-wrap">
+          {live && <a href={live} target="_blank" rel="noopener noreferrer" class="btn-primary text-sm">Live Demo</a>}
+          {github && <a href={github} target="_blank" rel="noopener noreferrer" class="btn-ghost text-sm">GitHub</a>}
+        </div>
+
+        {tech && tech.length > 0 && (
+          <div>
+            <span class="section-label">Tech Stack</span>
+            <div class="flex flex-wrap gap-2 mt-2">
+              {tech.map(t => <span class="tag">{t}</span>)}
+            </div>
+          </div>
+        )}
+
+        {period && (
+          <div>
+            <span class="section-label">Period</span>
+            <p class="font-mono text-sm text-[var(--text-secondary)] mt-1">{period}</p>
+          </div>
+        )}
+
+        {role && (
+          <div>
+            <span class="section-label">Role</span>
+            <p class="font-mono text-sm text-[var(--text-secondary)] mt-1">{role}</p>
+          </div>
+        )}
+
+        {scope && scope.length > 0 && (
+          <div>
+            <span class="section-label">Scope of Work</span>
+            <ul class="mt-2 space-y-1">
+              {scope.map(s => <li class="font-mono text-xs text-[var(--text-secondary)] flex items-center gap-2"><span class="text-[var(--accent)]">→</span>{s}</li>)}
+            </ul>
+          </div>
+        )}
+      </aside>
+    </div>
+  </main>
+</MainLayout>

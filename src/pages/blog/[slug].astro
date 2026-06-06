@@ -1,0 +1,50 @@
+---
+import MainLayout from "@layouts/MainLayout.astro";
+import { getCollection, render } from "astro:content";
+import { CONFIG } from "../../config";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map(post => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const readingTime = Math.max(1, Math.ceil(post.body.split(/\s+/).length / 200));
+---
+
+<MainLayout
+  title={`${post.data.title} — ${CONFIG.name}`}
+  description={post.data.description}
+  ogType="article"
+>
+  <main class="max-w-3xl mx-auto px-6 py-10 md:py-12">
+    {post.data.cover && (
+      <div class="rounded-lg border border-[var(--border)] overflow-hidden mb-8">
+        <img src={post.data.cover} alt={post.data.title} class="w-full object-cover max-h-[300px]" loading="eager" />
+      </div>
+    )}
+
+    <div class="mb-8">
+      <h1 class="font-display font-bold text-[clamp(1.5rem,3.5vw,2.2rem)] text-[var(--text-primary)] mb-3 leading-tight">{post.data.title}</h1>
+      <div class="flex flex-wrap items-center gap-3">
+        <small class="font-mono text-xs text-[var(--text-muted)] uppercase tracking-widest">
+          {new Date(post.data.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+        </small>
+        <span class="text-[var(--border)]">|</span>
+        <small class="font-mono text-xs text-[var(--text-muted)] uppercase tracking-widest">{readingTime} min read</small>
+        {post.data.tags && post.data.tags.map(tag => (
+          <span class="px-2 py-0.5 text-[9px] font-mono tracking-widest uppercase rounded bg-[var(--accent-dim)] border border-[var(--border)] text-[var(--text-secondary)]">{tag}</span>
+        ))}
+      </div>
+    </div>
+
+    <article class="prose prose-neutral dark:prose-invert max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)] prose-strong:text-[var(--text-primary)] prose-blockquote:border-[var(--accent)]">
+      <Content />
+    </article>
+
+    <div class="mt-12 pt-8 border-t border-[var(--border)]">
+      <a href="/blog" class="font-mono text-[0.75rem] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">← Back to Blog</a>
+    </div>
+  </main>
+</MainLayout>

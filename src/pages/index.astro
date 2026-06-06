@@ -1,0 +1,33 @@
+---
+import MainLayout from "@layouts/MainLayout.astro";
+import Hero from "@components/Hero.astro";
+import Metrics from "@components/Metrics.astro";
+import Projects from "@components/Projects.astro";
+import Skills from "@components/Skills.astro";
+import Experience from "@components/Experience.astro";
+import LatestPosts from "@components/LatestPosts.astro";
+import ContactCTA from "@components/ContactCTA.astro";
+import { CONFIG } from "../config";
+---
+
+<MainLayout title={`${CONFIG.name} — ${CONFIG.title}`} description={CONFIG.site.description}>
+  <main>
+    <Hero />
+    <Metrics />
+
+    <div class="editorial-break">
+      <p class="editorial-phrase">{CONFIG.editorial[0]}</p>
+    </div>
+
+    <Projects />
+    <Skills />
+    <Experience />
+
+    <div class="editorial-break">
+      <p class="editorial-phrase">{CONFIG.editorial[1]}</p>
+    </div>
+
+    <LatestPosts />
+    <ContactCTA />
+  </main>
+</MainLayout>
