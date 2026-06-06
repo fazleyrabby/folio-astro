@@ -37,7 +37,7 @@ export const CONFIG = {
     greeting: "Hi, I'm",
     viewProjectsLabel: "View Projects",
     resumeLabel: "Resume",
-    avatar: "https://picsum.photos/seed/avatar/400/400", // Placeholder avatar
+    avatar: "/avatar.png", // Points to public/avatar.png
   },
 
   // ── Stats / Metrics (homepage) ────────────────────────────

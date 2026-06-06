@@ -2,7 +2,7 @@
 
 A highly customizable, blazing-fast, and minimalist portfolio theme built with **Astro v5** and **Tailwind CSS**. Designed for developers, designers, and creators who want a premium aesthetic with zero bloat.
 
-![Folio Theme Preview](https://picsum.photos/seed/folio/1200/630) <!-- Replace with your actual preview image -->
+![Folio Theme Preview](./.github/assets/preview.png)
 
 ## ✨ Features
 
