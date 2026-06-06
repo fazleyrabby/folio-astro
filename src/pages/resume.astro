@@ -238,13 +238,20 @@ const skillLine = [
       margin: 12mm;
     }
 
+    :global(*) {
+      background: transparent !important;
+      box-shadow: none !important;
+      text-shadow: none !important;
+      color-scheme: light !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
     :global(html),
     :global(body) {
       background: #ffffff !important;
       color: #111 !important;
       font-size: 10.5pt !important;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
     }
 
     :global(header.sticky),
@@ -252,6 +259,7 @@ const skillLine = [
     :global(nav),
     :global(#scroll-to-top),
     :global(.hero-cursor-light),
+    :global(.hero-breathe),
     :global(.editorial-break) {
       display: none !important;
     }
@@ -260,6 +268,7 @@ const skillLine = [
       max-width: 100% !important;
       padding: 0 !important;
       margin: 0 !important;
+      background: #ffffff !important;
     }
 
     .cv {
@@ -267,20 +276,25 @@ const skillLine = [
       padding: 0 !important;
       border-radius: 0 !important;
       box-shadow: none !important;
+      background: #ffffff !important;
       color: #111 !important;
     }
 
     .cv-head {
-      border-color: #222 !important;
+      border-bottom: 1px solid #222 !important;
       padding-bottom: 8px !important;
       margin-bottom: 10px !important;
     }
 
     .cv-section {
-      border-color: #ddd !important;
+      border-top: 1px solid #ddd !important;
       padding: 8px 0 !important;
       page-break-inside: avoid;
       break-inside: avoid;
+    }
+
+    .cv-section:first-of-type {
+      border-top: 0 !important;
     }
 
     .cv-h {
@@ -288,19 +302,25 @@ const skillLine = [
       margin-bottom: 4px !important;
     }
 
-    a {
+    .cv a {
       color: inherit !important;
       text-decoration: none !important;
     }
 
-    h2, h3, .font-display {
+    .cv h2,
+    .cv h3,
+    .cv p,
+    .cv li,
+    .cv span,
+    .cv dt,
+    .cv dd {
       color: #111 !important;
     }
 
-    .text-\[var\(--text-secondary\)\],
-    .text-\[var\(--text-muted\)\],
-    .text-\[var\(--text-primary\)\] {
-      color: #222 !important;
+    .cv .italic,
+    .cv .text-\[var\(--text-secondary\)\],
+    .cv .text-\[var\(--text-muted\)\] {
+      color: #444 !important;
     }
   }
 </style>
