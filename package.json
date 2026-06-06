@@ -3,7 +3,20 @@
   "description": "A clean, minimal Astro portfolio theme with dark mode, smooth animations, and a single config file.",
   "version": "1.0.0",
   "type": "module",
-  "keywords": ["astro", "portfolio", "theme", "developer", "blog"],
+  "keywords": ["astro", "astro-theme", "portfolio", "theme", "developer", "blog", "minimal", "tailwind"],
+  "author": "Md. Fazley Rabbi",
+  "license": "MIT",
+  "homepage": "https://github.com/fazleyrabby/folio-astro#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fazleyrabby/folio-astro.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fazleyrabby/folio-astro/issues"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

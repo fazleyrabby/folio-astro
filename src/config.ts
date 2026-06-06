@@ -26,8 +26,7 @@ export const CONFIG = {
   nav: [
     { label: "Work", href: "/#projects" },
     { label: "Experience", href: "/#experience" },
-    { label: "Posts", href: "/#posts" },
-    { label: "Blog", href: "/blog/" },
+    { label: "Posts", href: "/blog/" },
     { label: "About", href: "/about/" },
     { label: "Uses", href: "/uses/" },
   ],

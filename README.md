@@ -2,7 +2,7 @@
 
 A highly customizable, blazing-fast, and minimalist portfolio theme built with **Astro v5** and **Tailwind CSS**. Designed for developers, designers, and creators who want a premium aesthetic with zero bloat.
 
-![Folio Theme Preview](./.github/assets/preview.png)
+![Folio Theme Preview](./.github/assets/preview.jpg)
 
 ## ✨ Features
 
@@ -17,7 +17,7 @@ A highly customizable, blazing-fast, and minimalist portfolio theme built with *
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/folio-astro.git my-portfolio
+   git clone https://github.com/fazleyrabby/folio-astro.git my-portfolio
    cd my-portfolio
    ```
 
